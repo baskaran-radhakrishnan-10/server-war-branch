@@ -101,6 +101,28 @@
                 <suffix value=".yyyy-MM-dd"/>
                 <append value="true"/>
             </periodic-rotating-file-handler>
+            <periodic-rotating-file-handler name="QA-APP" autoflush="true">
+                <formatter>
+                    <named-formatter name="PATTERN"/>
+                </formatter>
+                <file relative-to="jboss.server.log.dir" path="qa-application.log"/>
+                <suffix value=".yyyy-MM-dd"/>
+                <append value="true"/>
+            </periodic-rotating-file-handler>
+            <periodic-rotating-file-handler name="HIBERNATE" autoflush="true">
+                <formatter>
+                    <named-formatter name="PATTERN"/>
+                </formatter>
+                <file relative-to="jboss.server.log.dir" path="hibernate.log"/>
+                <suffix value=".yyyy-MM-dd"/>
+                <append value="true"/>
+            </periodic-rotating-file-handler>
+            <logger category="com.equiniti.qa_report" use-parent-handlers="false">
+                <level name="DEBUG"/>
+                <handlers>
+                    <handler name="QA-APP"/>
+                </handlers>
+            </logger>
             <logger category="com.arjuna">
                 <level name="WARN"/>
             </logger>
@@ -127,7 +149,7 @@
                 </handlers>
             </root-logger>
             <formatter name="PATTERN">
-                <pattern-formatter pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"/>
+                <pattern-formatter pattern="%z{level}%d{dd/MM/yyyy HH:mm:ss,SSS} %-5p [%c] [%L] %s%E%n"/>
             </formatter>
             <formatter name="COLOR-PATTERN">
                 <pattern-formatter pattern="%K{level}%d{HH:mm:ss,SSS} %-5p [%c] (%t) %s%e%n"/>
@@ -390,6 +412,12 @@
                     <jms-queue name="REPORT">
                         <entry name="java:/jms/queue/REPORT"/>
                     </jms-queue>
+                    <jms-queue name="EmailQueue">
+                        <entry name="java:/jms/queue/EmailQueue"/>
+                    </jms-queue>
+                    <jms-queue name="SMSQueue">
+                        <entry name="java:/jms/queue/SMSQueue"/>
+                    </jms-queue>
                 </jms-destinations>
             </hornetq-server>
         </subsystem>
@@ -454,7 +482,7 @@
                 </host>
             </server>
             <servlet-container name="default">
-                <jsp-config/>
+                <jsp-config development="true" keep-generated="false" check-interval="1" modification-test-interval="1"/>
                 <websockets/>
             </servlet-container>
             <handlers>
